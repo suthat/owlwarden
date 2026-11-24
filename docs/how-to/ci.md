@@ -103,7 +103,7 @@ jobs:
     steps:
       # Pin full commit SHAs — `ci-unpinned-action` flags moving tags like @v4.
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - uses: suthat/owlwarden/action@v1.3.0
+      - uses: suthat/owlwarden/action@v1.3.1
         with:
           preset: quick        # or agent-surface, to scan the agent workspace
           fail-on: medium

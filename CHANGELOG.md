@@ -10,6 +10,11 @@ are listed here under Changed.
 
 ## [Unreleased]
 
+## [1.3.1] — 2026-11-24
+
+A patch release: documentation that did not work, and dependencies with open
+advisories. No new rules, commands, or flags.
+
 ### Fixed
 
 - **The documented Action snippets did not resolve.** Both READMEs and the site
@@ -24,6 +29,24 @@ are listed here under Changed.
   server. `version:check` now covers all three.
 - The changelog feed dated undated entries from the clock, so a note under
   Unreleased made `site:check` fail the next day. It uses the latest release.
+
+### Changed
+
+- The oxc parser moves from 0.143 to 0.147. The fixture and golden suites pass
+  unchanged.
+
+### Security
+
+- **Every dependency with an open advisory is updated.** 1.3.0 was clean when it
+  shipped and has sixteen RUSTSEC advisories against its lockfile now, found by
+  `cargo deny check`:
+  - **wasmtime floored at 36.0.21**, locked at 36.0.23 (RUSTSEC-2026-0316, 0363,
+    0379, 0380, 0424, 0566, 0569, 0571). Plugins remain opt-in, and refused under
+    `--ci` without `--allow-plugins`.
+  - **rustls 0.23.46** (RUSTSEC-2026-0285, 0346, 0348, 0349),
+    **rustls-webpki 0.103.17** (0382) and **webpki-roots 1.0.12** (0381). These
+    carry the TLS that `--osv` and `--target` use.
+  - **tokio 1.54.1** (RUSTSEC-2026-0386) and **url 2.5.9** (0592).
 
 ## [1.3.0] — 2026-09-01
 
@@ -793,7 +816,8 @@ does and does not reach.
 - Bounded file count, file size, total bytes, and parser recursion depth, so a
   hostile repository cannot exhaust memory or the stack.
 
-[Unreleased]: https://github.com/suthat/owlwarden/compare/v1.3.0...HEAD
+[Unreleased]: https://github.com/suthat/owlwarden/compare/v1.3.1...HEAD
+[1.3.1]: https://github.com/suthat/owlwarden/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/suthat/owlwarden/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/suthat/owlwarden/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/suthat/owlwarden/compare/v1.0.0...v1.1.0
