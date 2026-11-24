@@ -112,7 +112,9 @@ ${sections}
 /** The Atom feed, one entry per release. */
 export function changelogFeed(markdown, site) {
   const releases = parseReleases(markdown).slice(0, 20);
-  const updated = releases[0]?.date ?? new Date().toISOString().slice(0, 10);
+  // Not the clock, for the reason `latestReleaseDate` gives: an undated
+  // `[Unreleased]` section would turn `site:check` red the next morning.
+  const updated = latestReleaseDate(markdown);
 
   const entries = releases
     .map((release) => {

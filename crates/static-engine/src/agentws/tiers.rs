@@ -786,7 +786,7 @@ mod tests {
             keys_only_above_root: 3,
             ..EffectiveConfig::default()
         };
-        assert!(config.keys.is_empty());
+        assert!(config.keys.is_empty(), "{:?}", config.keys);
         assert_eq!(config.keys_only_above_root, 3);
     }
 
@@ -807,7 +807,10 @@ mod tests {
                 &AgentHost::CLAUDE_CODE,
                 TierPolicy::ProjectOnly,
             );
-            assert!(config.shadowed_keys().is_empty());
+            assert!(
+                config.shadowed_keys().is_empty(),
+                "a hostile file contributes nothing"
+            );
         }
     }
 }

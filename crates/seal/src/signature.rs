@@ -329,6 +329,9 @@ mod tests {
     fn a_malformed_trust_file_yields_no_keys_rather_than_an_error() {
         let trust = tempfile::NamedTempFile::new().unwrap();
         std::fs::write(trust.path(), "{ not json").unwrap();
-        assert!(read_trust_file(trust.path()).is_empty());
+        assert!(
+            read_trust_file(trust.path()).is_empty(),
+            "a malformed file trusts no key"
+        );
     }
 }

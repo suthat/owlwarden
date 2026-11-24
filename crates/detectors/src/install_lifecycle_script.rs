@@ -417,6 +417,6 @@ mod tests {
         // what reports it. The assertion is that we do not crash and do not
         // claim to have checked.
         let findings = run_rule(&InstallLifecycleScript, &[("package.json", "{not json")]);
-        assert!(findings.is_empty());
+        assert!(findings.is_empty(), "{findings:?}");
     }
 }

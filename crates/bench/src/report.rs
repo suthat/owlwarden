@@ -300,7 +300,10 @@ mod tests {
             overall: Some(0.9),
             ..Thresholds::default()
         };
-        assert!(report(None, None).breaches(&thresholds).is_empty());
+        assert!(
+            report(None, None).breaches(&thresholds).is_empty(),
+            "nothing measured breaches nothing"
+        );
     }
 
     #[test]

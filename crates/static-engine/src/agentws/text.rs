@@ -410,7 +410,10 @@ mod tests {
                 "{text:?} produced {runs:?}"
             );
         }
-        assert!(scan_hidden("Run the tests before committing.").is_empty());
+        assert!(
+            scan_hidden("Run the tests before committing.").is_empty(),
+            "plain text hides nothing"
+        );
     }
 
     #[test]

@@ -519,7 +519,8 @@ mod tests {
         ));
         assert!(
             diff.blocking(Severity::Info, Confidence::Possible, None)
-                .is_empty()
+                .is_empty(),
+            "a carried finding never blocks"
         );
     }
 
@@ -609,7 +610,7 @@ mod tests {
         );
         assert_eq!(carried.verdict, Verdict::Clean);
         assert_eq!(carried.counts.carried, 1);
-        assert!(carried.introduced.is_empty());
+        assert!(carried.introduced.is_empty(), "{:?}", carried.introduced);
     }
 
     #[test]
@@ -690,7 +691,11 @@ mod tests {
         assert_eq!(record.fixed.len(), 1);
         assert_eq!(record.fixed[0].id, "cors-permissive");
         assert_eq!(record.fixed[0].at, "b.ts:2");
-        assert!(!record.fixed[0].fingerprint.is_empty());
+        assert!(
+            !record.fixed[0].fingerprint.is_empty(),
+            "{:?}",
+            record.fixed[0].fingerprint
+        );
     }
 
     #[test]

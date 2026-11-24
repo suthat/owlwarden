@@ -339,7 +339,7 @@ mod tests {
             vec![finding("stack-trace-leak", "app/route.ts", 2)],
             &directives,
         );
-        assert!(outcome.findings.is_empty());
+        assert!(outcome.findings.is_empty(), "{:?}", outcome.findings);
         assert_eq!(outcome.suppressed_count, 1);
         assert!(!outcome.records[0].stale);
         assert!(outcome.records[1].stale);
@@ -357,7 +357,10 @@ mod tests {
     #[test]
     fn rejects_unknown_rule_id_shape() {
         let source = "// owlwarden-disable-next-line Not_A_Rule -- nope\nx\n";
-        assert!(parse_directives("a.ts", source).is_empty());
+        assert!(
+            parse_directives("a.ts", source).is_empty(),
+            "a malformed rule id is no directive"
+        );
     }
 
     #[test]

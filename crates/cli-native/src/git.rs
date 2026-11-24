@@ -165,7 +165,10 @@ mod tests {
     #[test]
     fn session_paths_outside_a_repository_are_empty_rather_than_an_error() {
         let dir = tempfile::tempdir().unwrap();
-        assert!(session_paths(&dir.path().to_string_lossy()).is_empty());
+        assert!(
+            session_paths(&dir.path().to_string_lossy()).is_empty(),
+            "there is no repository here"
+        );
     }
 
     #[test]

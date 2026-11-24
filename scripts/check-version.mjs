@@ -20,6 +20,10 @@
  * Neither is published by `npm publish`, so neither is covered by the failure
  * that catches the rest. They are checked here instead.
  *
+ * The MCP descriptor has a second way to fail late. The registry reads `mcpName`
+ * out of the *published* npm package to prove ownership, and rejects a long
+ * description, so a mistake in either is only fixable by another release.
+ *
  *   node scripts/check-version.mjs            # all seven agree
  *   node scripts/check-version.mjs v0.1.0     # ...and equal the tag
  */
@@ -94,6 +98,36 @@ async function mcpVersions(relative) {
   return { server: parsed.version, package: npm.version };
 }
 
+/** Longest `description` the MCP registry accepts (schema 2025-12-11). */
+const MCP_DESCRIPTION_MAX = 100;
+
+/**
+ * Returns what would make the MCP registry reject this release, or make a host
+ * launch something other than the server.
+ */
+async function mcpRegistryProblems(descriptor, manifest) {
+  const server = JSON.parse(await readFile(join(root, descriptor), "utf8"));
+  const pkg = JSON.parse(await readFile(join(root, manifest), "utf8"));
+  const npm = server.packages?.find((entry) => entry.registryType === "npm");
+  const found = [];
+
+  if (pkg.mcpName !== server.name) {
+    found.push(`${manifest} mcpName is ${pkg.mcpName}, but ${descriptor} names ${server.name}`);
+  }
+  if (npm?.identifier !== pkg.name) {
+    found.push(`${descriptor} points at npm package ${npm?.identifier}, not ${pkg.name}`);
+  }
+  const length = server.description?.length ?? 0;
+  if (length < 1 || length > MCP_DESCRIPTION_MAX) {
+    found.push(`${descriptor} description is ${length} characters; the registry allows 1 to ${MCP_DESCRIPTION_MAX}`);
+  }
+  // Without the subcommand a host runs the bare CLI, which speaks no MCP.
+  if (npm?.packageArguments?.[0]?.value !== "mcp") {
+    found.push(`${descriptor} does not pass the \`mcp\` subcommand to the package`);
+  }
+  return found;
+}
+
 const found = new Map();
 for (const relative of MANIFESTS) {
   found.set(relative, await jsonVersion(relative));
@@ -106,7 +140,7 @@ found.set("mcp/server.json (server)", mcp.server);
 found.set("mcp/server.json (npm package)", mcp.package);
 
 const distinct = new Set(found.values());
-const problems = [];
+const problems = await mcpRegistryProblems("mcp/server.json", "packages/cli/package.json");
 
 if (distinct.size !== 1) {
   problems.push("versions disagree:");

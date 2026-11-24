@@ -1219,7 +1219,7 @@ mod tests {
         assert_eq!(parsed.preset, owlwarden_detectors::DEFAULT_PRESET);
         assert_eq!(parsed.fail_on, Severity::Info);
         assert!(parsed.target.is_none());
-        assert!(parsed.scope.is_empty());
+        assert!(parsed.scope.is_empty(), "{:?}", parsed.scope);
     }
 
     #[test]
@@ -1271,7 +1271,7 @@ mod tests {
             panic!("expected a scan command");
         };
         assert!(parsed.allow_plugins);
-        assert!(parsed.plugins.is_empty());
+        assert!(parsed.plugins.is_empty(), "{:?}", parsed.plugins);
     }
 
     #[test]

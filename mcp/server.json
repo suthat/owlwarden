@@ -1,20 +1,26 @@
 {
-  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-10-17/server.schema.json",
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.suthat/owlwarden",
-  "description": "Offline security scanner for Node web apps and the AI agent workspace itself. Read-only MCP: scan a project or a file, explain a rule, list the catalogue. No telemetry, and no network unless the operator opts in on the CLI.",
+  "description": "Read-only, offline security checks for Node web apps and coding-agent configuration.",
   "repository": {
     "url": "https://github.com/suthat/owlwarden",
     "source": "github"
   },
-  "version": "1.3.0",
+  "version": "1.3.1",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "owlwarden",
-      "version": "1.3.0",
+      "version": "1.3.1",
       "transport": {
         "type": "stdio"
-      }
+      },
+      "packageArguments": [
+        {
+          "type": "positional",
+          "value": "mcp"
+        }
+      ]
     }
   ]
 }

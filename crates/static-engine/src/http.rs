@@ -377,14 +377,19 @@ mod tests {
         assert!(
             probe(&Framework::EXPRESS, "app.get('trust proxy')")
                 .2
-                .is_empty()
+                .is_empty(),
+            "a setting reader is not a route"
         );
-        assert!(probe(&Framework::EXPRESS, "app.use(helmet())").2.is_empty());
+        assert!(
+            probe(&Framework::EXPRESS, "app.use(helmet())").2.is_empty(),
+            "middleware is not a route"
+        );
         // A computed path is skipped rather than guessed at.
         assert!(
             probe(&Framework::EXPRESS, "app.get(basePath, h)")
                 .2
-                .is_empty()
+                .is_empty(),
+            "a computed path names no route"
         );
     }
 

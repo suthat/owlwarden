@@ -291,7 +291,7 @@ mod tests {
             version: "1.0.0".to_owned(),
         }];
         let hits = futures_executor::block_on(client.query(&queries)).unwrap();
-        assert!(hits.is_empty());
+        assert!(hits.is_empty(), "{hits:?}");
     }
 
     #[test]
