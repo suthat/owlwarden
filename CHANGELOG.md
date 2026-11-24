@@ -10,6 +10,21 @@ are listed here under Changed.
 
 ## [Unreleased]
 
+### Fixed
+
+- **The documented Action snippets did not resolve.** Both READMEs and the site
+  said `suthat/owlwarden/action@v1`, and there is no `v1` tag or branch. Two
+  other pages pinned `@v1.0.0`, the release whose Action refused every
+  invocation. Every snippet now names the current release tag, and
+  `docs:check` fails when one does not.
+- **The MCP registry would have rejected `mcp/server.json`.** The npm package
+  had no `mcpName`, which is how the registry proves ownership. The description
+  was 223 characters against a limit of 100. The descriptor also never passed
+  the `mcp` subcommand, so a host would have started the CLI instead of the
+  server. `version:check` now covers all three.
+- The changelog feed dated undated entries from the clock, so a note under
+  Unreleased made `site:check` fail the next day. It uses the latest release.
+
 ## [1.3.0] — 2026-09-01
 
 1.2 answered *which of these findings matters*. This release answers the

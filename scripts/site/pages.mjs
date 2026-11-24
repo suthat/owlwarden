@@ -794,7 +794,7 @@ function ci() {
     body: `
 ${code(
   "yaml",
-  `- uses: suthat/owlwarden/action@v1
+  `- uses: suthat/owlwarden/action@v1.3.0
   with:
     fail-on: medium
     format: sarif

@@ -135,7 +135,9 @@ its own platform's binary, and it cannot generate
 an attestation signed by the CI system that did the build.
 
 1. Bump the version in all five manifests — `Cargo.toml`, `packages/*/package.json`,
-   `crates/napi/package.json` — and check with `node scripts/check-version.mjs`.
+   `crates/napi/package.json` — and check with `node scripts/check-version.mjs`. The
+   Action snippets in the docs name the same version; `pnpm docs:check` lists any
+   that do not.
 2. Update `CHANGELOG.md`.
 3. Exercise the pipeline without publishing:
    `gh workflow run release.yml -f dry_run=true`. It builds all seven targets and

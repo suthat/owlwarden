@@ -197,6 +197,11 @@ assert(
 // input GitHub does not recognise fails the workflow, and the wrong path fails
 // before the job starts. Copy-pasteable is the whole point of those snippets,
 // so what they contain is checked against the Action itself.
+//
+// The ref is part of that. `@v1` shipped for months with no such tag or branch,
+// and `@v1.0.0` resolves to the release whose Action refused every invocation.
+// A moving major tag would also be what `ci-unpinned-action` reports, so every
+// snippet names the release these documents describe.
 
 const actionYaml = await readFile(new URL("action/action.yml", root), "utf8");
 
@@ -212,14 +217,16 @@ assert(actionInputs.size >= 8, `parsed only ${actionInputs.size} Action inputs; 
 const DOCUMENTS = [
   ["README.md", githubReadme],
   ["packages/cli/README.md", readme],
+  ["action/README.md", await readFile(new URL("action/README.md", root), "utf8")],
   ["docs/how-to/ci.md", await readFile(new URL("docs/how-to/ci.md", root), "utf8")],
+  ["docs/how-to/upgrade.md", await readFile(new URL("docs/how-to/upgrade.md", root), "utf8")],
   ["scripts/site/pages.mjs", await readFile(new URL("scripts/site/pages.mjs", root), "utf8")],
 ];
 
 let snippetsChecked = 0;
 for (const [name, text] of DOCUMENTS) {
-  for (const match of text.matchAll(/uses: ([\w.-]+\/[\w./-]+)@[\w.-]+\n((?:.*\n)*?)(?=\n|```)/g)) {
-    const [, action, body] = match;
+  for (const match of text.matchAll(/uses: ([\w.-]+\/[\w./-]+)@([\w.-]+)\n((?:.*\n)*?)(?=\n|```)/g)) {
+    const [, action, ref, body] = match;
     if (!action.startsWith("suthat/owlwarden")) continue;
     snippetsChecked += 1;
 
@@ -227,6 +234,11 @@ for (const [name, text] of DOCUMENTS) {
       action,
       "suthat/owlwarden/action",
       `${name} references ${action}; the Action lives in action/, not at the repository root`,
+    );
+    assert.equal(
+      ref,
+      `v${packageJson.version}`,
+      `${name} pins the Action to ${ref}; only a release tag resolves, and it must be this release`,
     );
 
     // `with:` keys are one indent deeper than `with:` itself, whatever the
@@ -242,7 +254,7 @@ for (const [name, text] of DOCUMENTS) {
     }
   }
 }
-assert(snippetsChecked >= 3, `found only ${snippetsChecked} Action snippets; expected one per document`);
+assert(snippetsChecked >= DOCUMENTS.length, `found only ${snippetsChecked} Action snippets; expected one per document`);
 
 console.log(
   `README contracts passed (npm: ${size} bytes, ${keywords.length} keywords; ` +

@@ -302,7 +302,7 @@ run. The contract is canonical in [docs/how-to/ci.md](docs/how-to/ci.md).
 ## In CI
 
 ```yaml
-- uses: suthat/owlwarden/action@v1
+- uses: suthat/owlwarden/action@v1.3.0
   with:
     fail-on: medium
     format: sarif
