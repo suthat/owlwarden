@@ -144,12 +144,20 @@ an attestation signed by the CI system that did the build.
    verifies every platform package has its binary.
 4. Merge, then tag: `git tag -s vX.Y.Z && git push origin vX.Y.Z`.
 
+The dry run does not use `NPM_TOKEN`, so it cannot tell you the token has expired.
+
+After npm, the same workflow lists the version on the MCP registry
+(`.github/workflows/mcp-registry.yml`). It needs no secret. If only that step
+fails, run it alone: `gh workflow run mcp-registry.yml`.
+
 The tag must match the manifests or the release fails before anything is built.
 That check exists because npm publishes are immutable: a wrong version cannot be
 replaced, only deprecated and superseded.
 
 Publishing needs an `NPM_TOKEN` repository secret — a granular automation token
-with write access to `owlwarden` and the `@dointhai` scope.
+with write access to `owlwarden` and the `@dointhai` scope, and with "bypass
+two-factor authentication" on. Without that, npm answers `EOTP`. An expired
+token is answered with a 404 for a package that plainly exists.
 
 ## Code of conduct
 

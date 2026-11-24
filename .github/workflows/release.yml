@@ -294,3 +294,14 @@ jobs:
             echo "npx owlwarden@${GITHUB_REF_NAME#v} scan" >> "$GITHUB_STEP_SUMMARY"
             echo '```' >> "$GITHUB_STEP_SUMMARY"
           fi
+
+  # Its own workflow, so that a listing that failed can be run again without
+  # publishing to npm a second time, which npm refuses.
+  mcp-registry:
+    name: MCP registry
+    needs: publish
+    if: github.event_name == 'push'
+    permissions:
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/mcp-registry.yml
