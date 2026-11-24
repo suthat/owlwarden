@@ -203,7 +203,7 @@ mod tests {
             ),
             endpoint_finding(HEADERS_PRESENT_EVIDENCE),
         ]);
-        assert!(out.is_empty());
+        assert!(out.is_empty(), "{out:?}");
     }
 
     #[test]

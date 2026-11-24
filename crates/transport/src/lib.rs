@@ -721,7 +721,7 @@ mod tests {
         request.limits.max_body_bytes = 0;
         let response = transport.send(request).await.unwrap();
         assert_eq!(response.header("x-ok"), Some("1"));
-        assert!(response.body.is_empty());
+        assert!(response.body.is_empty(), "{:?}", response.body);
         assert!(!response.body_truncated);
         server.abort();
     }

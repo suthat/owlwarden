@@ -407,7 +407,11 @@ mod tests {
         )
         .await;
         assert_eq!(decision.verdict, Verdict::Deny);
-        assert!(decision.posture_rejections.is_empty());
+        assert!(
+            decision.posture_rejections.is_empty(),
+            "{:?}",
+            decision.posture_rejections
+        );
         assert!(decision.reason.contains("agent-mcp-unpinned-remote"));
     }
 

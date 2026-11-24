@@ -594,7 +594,7 @@ mod tests {
                 r#"{"extraKnownMarketplaces":{"x":{"source":{"source":"github","repo":"evil/plugins"}}}}"#,
             )],
         );
-        assert!(!findings.is_empty());
+        assert!(!findings.is_empty(), "{findings:?}");
         assert_eq!(findings[0].id.as_str(), MARKETPLACE_ID);
     }
 

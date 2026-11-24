@@ -213,7 +213,7 @@ mod tests {
         ]);
 
         apply_suppressions(&mut report, &source);
-        assert!(report.findings.is_empty());
+        assert!(report.findings.is_empty(), "{:?}", report.findings);
         assert_eq!(report.suppressed_count, 1);
         assert_eq!(report.suppressions.len(), 1);
         assert!(!report.suppressions[0].stale);

@@ -231,8 +231,8 @@ mod tests {
             assert!(!profiles.is_empty(), "{surface} has no profiles");
             for profile in &profiles {
                 assert_eq!(profile.surface(), surface);
-                assert!(!profile.as_str().is_empty());
-                assert!(!profile.label().is_empty());
+                assert!(!profile.as_str().is_empty(), "a profile has a name");
+                assert!(!profile.label().is_empty(), "a profile has a label");
             }
         }
     }

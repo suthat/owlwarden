@@ -439,6 +439,6 @@ mod tests {
         let ctx =
             ScanContext::with_advisory(&source, None, Some(&client), &scope, &settings, &budget);
         let findings = OsvAdvisoryDetector.run(&ctx).await.unwrap();
-        assert!(findings.is_empty());
+        assert!(findings.is_empty(), "{findings:?}");
     }
 }

@@ -247,8 +247,8 @@ mod tests {
         for (index, entry) in ASI_2026.iter().enumerate() {
             let expected = format!("ASI{:02}", index + 1);
             assert_eq!(entry.id, expected, "categories must be in order");
-            assert!(!entry.title.is_empty());
-            assert!(!entry.summary.is_empty());
+            assert!(!entry.title.is_empty(), "{:?}", entry.title);
+            assert!(!entry.summary.is_empty(), "{:?}", entry.summary);
         }
     }
 

@@ -708,7 +708,10 @@ mod tests {
 
     #[test]
     fn missing_headers_parser_ignores_noise_without_marker() {
-        assert!(missing_headers_from_evidence("runtime: security headers present").is_empty());
+        assert!(
+            missing_headers_from_evidence("runtime: security headers present").is_empty(),
+            "text without the marker names no header"
+        );
     }
 
     #[test]

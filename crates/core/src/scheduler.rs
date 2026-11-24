@@ -358,7 +358,7 @@ mod tests {
         .await;
 
         // The active detector would have errored had it run.
-        assert!(report.errors.is_empty());
+        assert!(report.errors.is_empty(), "{:?}", report.errors);
         assert_eq!(report.findings.len(), 1);
     }
 
@@ -398,7 +398,7 @@ mod tests {
         )
         .await;
 
-        assert!(report.findings.is_empty());
+        assert!(report.findings.is_empty(), "{:?}", report.findings);
         assert_eq!(report.summary.total(), 0);
     }
 

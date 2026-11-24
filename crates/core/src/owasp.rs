@@ -305,8 +305,8 @@ mod tests {
         for (index, entry) in TOP_10_2021.iter().enumerate() {
             let expected = format!("A{:02}:2021", index + 1);
             assert_eq!(entry.id, expected, "categories must be in order");
-            assert!(!entry.title.is_empty());
-            assert!(!entry.summary.is_empty());
+            assert!(!entry.title.is_empty(), "{:?}", entry.title);
+            assert!(!entry.summary.is_empty(), "{:?}", entry.summary);
             assert!(entry.url().starts_with("https://owasp.org/Top10/"));
         }
     }

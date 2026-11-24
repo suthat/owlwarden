@@ -270,7 +270,7 @@ export class UsersController {
         let path = rel("broken.ts");
         let failure = with_parsed(&path, "export function ( { {", meta(), |_| ()).unwrap_err();
         assert_eq!(failure.path, "broken.ts");
-        assert!(!failure.message.is_empty());
+        assert!(!failure.message.is_empty(), "{:?}", failure.message);
     }
 
     #[test]

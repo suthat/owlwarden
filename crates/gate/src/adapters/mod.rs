@@ -204,6 +204,9 @@ mod tests {
 
     #[test]
     fn a_payload_with_no_paths_yields_none_rather_than_a_guess() {
-        assert!(paths_in(&serde_json::json!({"command": "ls"})).is_empty());
+        assert!(
+            paths_in(&serde_json::json!({"command": "ls"})).is_empty(),
+            "a command names no path"
+        );
     }
 }
