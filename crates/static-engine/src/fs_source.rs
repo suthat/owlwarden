@@ -12,8 +12,11 @@
 //!   [`limits::source::MAX_DEPTH`].
 //! - Files over [`limits::source::MAX_FILE_BYTES`] are skipped; reads are also
 //!   bounded with `Read::take`, and the run has a total byte budget on top.
-//! - `.gitignore` is honoured, plus a built-in deny list, because scanning
-//!   `node_modules` is slow and finds nothing you can fix.
+//! - Ignore files are honoured — `.gitignore`, `.ignore`, and
+//!   `.git/info/exclude`, the files the `ignore` crate reads — plus a built-in
+//!   deny list, because scanning `node_modules` is slow and finds nothing you
+//!   can fix. The agent-workspace walk honours none of them, for the reason
+//!   ADR 0025 §3 gives for `.gitignore`.
 
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
@@ -194,7 +197,13 @@ fn build_globs_with(
 const WORKSPACE_EXCLUDED_DIRS: &[&str] = &["node_modules", ".git", ".svn", ".hg", "target"];
 
 impl FsSourceProvider {
-    /// Walks the tree, honouring `.gitignore` and the deny list, or not.
+    /// Walks the tree, honouring ignore files and the deny list, or not.
+    ///
+    /// "Ignore files" is every file the `ignore` crate reads: `.gitignore`,
+    /// `.ignore`, and `.git/info/exclude`. They switch together because each is
+    /// a file the scanned tree supplies. Switching off `.gitignore` alone once
+    /// left `.ignore` on, and a committed one hid `.claude/` from the agent
+    /// surface as completely as a `.gitignore` would have.
     ///
     /// One walker with a switch rather than two: the containment, depth, and
     /// size guarantees are then written once, and a future change to them
@@ -210,9 +219,13 @@ impl FsSourceProvider {
         } else {
             WORKSPACE_EXCLUDED_DIRS
         };
+        // The builder has no single switch for ignore files, and `.ignore` and
+        // `.git/info/exclude` are on by default, so each is named here.
         let walker = ignore::WalkBuilder::new(&self.root)
             .hidden(false)
             .git_ignore(honour_ignore_files)
+            .ignore(honour_ignore_files)
+            .git_exclude(honour_ignore_files)
             .git_global(false)
             .parents(false)
             .follow_links(false)
@@ -386,6 +399,57 @@ mod tests {
         let paths: Vec<&str> = files.iter().map(|f| f.path.as_str()).collect();
 
         assert_eq!(paths, vec!["app/api/users/route.ts"]);
+    }
+
+    /// Every file the `ignore` crate reads. `.git/` is created alongside,
+    /// because the two git ones only apply inside a repository.
+    const IGNORE_FILES: [&str; 3] = [".gitignore", ".ignore", ".git/info/exclude"];
+
+    #[test]
+    fn the_application_walk_honours_every_ignore_file() {
+        let mut not_honoured = Vec::new();
+        for ignore_file in IGNORE_FILES {
+            let dir = tempfile::tempdir().unwrap();
+            let root = dir.path();
+            std::fs::create_dir_all(root.join(".git")).unwrap();
+            write(root, ignore_file, "generated/\n");
+            write(root, "app/route.ts", "");
+            write(root, "generated/client.ts", "");
+
+            let provider = FsSourceProvider::new(root).unwrap();
+            let files = provider.files(&FileSelector::all()).unwrap();
+            let paths: Vec<&str> = files.iter().map(|f| f.path.as_str()).collect();
+            if paths != ["app/route.ts"] {
+                not_honoured.push(ignore_file);
+            }
+        }
+        assert!(not_honoured.is_empty(), "not honoured: {not_honoured:?}");
+    }
+
+    #[test]
+    fn the_agent_workspace_walk_honours_no_ignore_file() {
+        // Each of these is a file the scanned tree supplies, and `.ignore` is
+        // one a repository can commit. Overriding `.gitignore` alone left a
+        // one-line way for a repository to hide its own `.claude/`.
+        let mut hid_config = Vec::new();
+        for ignore_file in IGNORE_FILES {
+            let dir = tempfile::tempdir().unwrap();
+            let root = dir.path();
+            std::fs::create_dir_all(root.join(".git")).unwrap();
+            write(root, ignore_file, ".claude/\nCLAUDE.md\n");
+            write(root, ".claude/settings.json", "{}");
+            write(root, "CLAUDE.md", "");
+
+            let provider = FsSourceProvider::new(root).unwrap();
+            let files = provider
+                .agent_workspace_files(&[".claude/settings.json", "CLAUDE.md"])
+                .unwrap();
+            let paths: Vec<&str> = files.iter().map(|f| f.path.as_str()).collect();
+            if paths != [".claude/settings.json", "CLAUDE.md"] {
+                hid_config.push(ignore_file);
+            }
+        }
+        assert!(hid_config.is_empty(), "hid agent config: {hid_config:?}");
     }
 
     #[test]

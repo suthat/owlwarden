@@ -164,6 +164,12 @@
   <a href="../rules/">the rule catalogue</a>
 </p>
 
+<h2 id="unreleased">Unreleased</h2>
+<h3>Fixed</h3>
+<ul>
+  <li><strong>A committed <code>.ignore</code> file could hide a repository&#39;s agent configuration.</strong> The agent-workspace surface overrides <code>.gitignore</code>, because <code>.claude/settings.local.json</code> is conventionally gitignored and the host loads it anyway. The walker still read <code>.ignore</code>, ripgrep&#39;s convention, which a repository can commit. One line listing <code>.claude/</code> or <code>CLAUDE.md</code> took those files away from the agent rules, <code>gate</code> and <code>seal</code>, and the scan reported nothing for them. <code>.git/info/exclude</code>, which a clone does not carry, did the same. The surface now honours no ignore file at all. Application scans still honour all three, as before.</li>
+</ul>
+
 <h2 id="1-3-2">1.3.2 <span class="chip chip-scope">2026-11-27</span></h2>
 <p>A documentation release, cut so the npm page shows the MCP server&#39;s grade. No new rules, commands, or flags, and nothing a scan reports has changed.</p>
 <h3>Added</h3>

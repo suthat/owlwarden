@@ -150,12 +150,14 @@ Added in 1.1 ([ADR 0025](docs/adr/0025-agent-surface-and-supply-chain.md)). This
 surface deliberately relaxes exactly one guarantee, and it is worth being
 precise about which.
 
-- **`.gitignore` and the directory deny list are overridden**, for a closed list
-  of paths held as data in source. `.claude/settings.local.json` is
-  conventionally gitignored and is also where a workspace-scoped hook
-  configuration vulnerability lived; `.vscode/` and `.cursor/` were on the
-  application-scan deny list for reasons that made sense when the only question
-  was "is this application source?".
+- **Ignore files and the directory deny list are overridden**, for a closed list
+  of paths held as data in source. That is every ignore file, not only
+  `.gitignore`: `.ignore` and `.git/info/exclude` are overridden too, because a
+  repository can commit an `.ignore` and hide its own `.claude/` with one line.
+  `.claude/settings.local.json` is conventionally gitignored and is also where a
+  workspace-scoped hook configuration vulnerability lived; `.vscode/` and
+  `.cursor/` were on the application-scan deny list for reasons that made sense
+  when the only question was "is this application source?".
 - **Everything else still holds.** Results stay under the root, symlinks that
   leave it are refused at read time, `node_modules` and `.git` are still
   excluded, and the size and depth caps apply.

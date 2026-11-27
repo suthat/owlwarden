@@ -13,6 +13,11 @@
 //! list, for reasons that made sense when the only question was "is this
 //! application source?".
 //!
+//! `.gitignore` stands for every ignore file here. The walker also reads
+//! `.ignore`, ripgrep's convention, which a repository can commit, and
+//! `.git/info/exclude`. Overriding `.gitignore` alone left a one-line way for a
+//! repository to hide its own `.claude/`, so the override covers all three.
+//!
 //! So this surface reads from an explicit list that overrides both. Everything
 //! else stays: paths remain under the scan root, symlinks that leave it are
 //! refused, size caps apply, and nothing is ever executed
