@@ -99,6 +99,10 @@ const HEROES = {
       { label: `Read ${rules.length} rules`, href: "./rules/", kind: "secondary" },
       { label: "How turn works", href: "./turn/", kind: "secondary" },
     ],
+    // Text, not the card, so the claim shows above the fold without a request
+    // to mcprush. It is static: if mcprush regrades the server, change it here
+    // and in the homepage section it links to. The card there updates itself.
+    proof: `<a class="hero-proof" href="#mcp-grade"><span class="grade-mark" aria-hidden="true">A</span><span><strong>MCP server graded A for security</strong> by mcprush</span></a>`,
     visual: findingVisual([
       leak ? renderFrame(leak, esc) : "",
       hook ? renderFrame(hook, esc) : "",

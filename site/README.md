@@ -44,16 +44,28 @@ pnpm site:check          # is it current, and is it correct?
 would generate?* and needs the native addon. `check-site.mjs` answers *is the
 committed site correct?* — one `<h1>` per page, a self-referencing canonical, a
 description that will not be truncated, valid JSON-LD, no heading-level jumps,
-no dead links across the whole graph, and no external host anywhere. It needs
+no dead links across the whole graph, the same header menus on every page, and
+nothing fetched from another host except the one exception below. It needs
 nothing but Node, which is why the Pages workflow can run it.
 
 ## What is deliberately absent
 
-No JavaScript ships. No font CDN, no analytics, no tag manager, no third-party
-anything — a tool whose entire argument is that it sends nothing anywhere cannot
-have a page that makes three external requests before the reader has read a
-sentence. `check-site.mjs` refuses any host outside a short allowlist, and any
-`<script>` that is not JSON-LD.
+No JavaScript ships. No font CDN, no analytics, no tag manager — a tool whose
+entire argument is that it sends nothing anywhere cannot have a page that makes
+three external requests before the reader has read a sentence. `check-site.mjs`
+refuses a link to any host outside a short allowlist, anything a page would
+fetch from another host, and any `<script>` that is not JSON-LD.
+
+**One exception, pinned rather than trusted.** The homepage and `/mcp/` show
+mcprush's grade card for the MCP server, loaded from mcprush.com. It has to be
+live: mcprush regrades the server and redraws its version and download counts,
+so a copy served from here would be wrong by the next release. It loads lazily
+and sends no referrer. `check-site.mjs` fails if the URL, either page, or either
+attribute changes, and if any second external resource appears anywhere.
+
+The header menus are popovers, not scripts. The browser opens one from its
+button and closes it on Escape or a click outside. Where popovers are not
+supported the buttons hide themselves, and the footer lists every page anyway.
 
 ## The icons
 

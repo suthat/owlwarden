@@ -32,7 +32,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="alternate" type="application/atom+xml" title="owlwarden releases" href="https://suthat.github.io/owlwarden/changelog/feed.xml">
-<link rel="stylesheet" href="./styles.css?v=86e674860125">
+<link rel="stylesheet" href="./styles.css?v=05829a94f537">
 
 <script type="application/ld+json">
 {
@@ -128,15 +128,65 @@
     <img src="./favicon.svg" width="32" height="32" alt="">
     <span>owlwarden</span>
   </a>
-  <nav aria-label="Primary">
-    <a href="./rules/">Rules</a>
-    <a href="./agent-config-security/">Agent config</a>
-    <a href="./turn/">turn</a>
-    <a href="./vet/">vet</a>
-    <a href="./offline/">Offline</a>
-    <a href="./owasp/">Coverage</a>
-    <a class="nav-cta" href="https://github.com/suthat/owlwarden" rel="noopener">GitHub <span aria-hidden="true">↗</span></a>
+  <nav aria-label="Primary" class="primary-nav">
+    <div class="nav-menu">
+      <button type="button" class="nav-trigger" popovertarget="menu-product">Product</button>
+      <div class="nav-panel" id="menu-product" popover>
+        <div class="nav-panel-head">
+          <p class="nav-panel-title">Product</p>
+          <p class="nav-panel-intro">What owlwarden checks, and how it stays local.</p>
+        </div>
+        <div class="nav-panel-body">
+          <ul class="nav-tiles">
+            <li><a href="./turn/"><span class="nav-name">turn</span><span class="nav-blurb">Only what this turn introduced.</span></a></li>
+            <li><a href="./vet/"><span class="nav-name">vet</span><span class="nav-blurb">Check a repository before you open it.</span></a></li>
+            <li><a href="./seal/"><span class="nav-name">seal</span><span class="nav-blurb">Notice when the agent&#39;s execution surface moves.</span></a></li>
+            <li><a href="./agent-config-security/"><span class="nav-name">Agent config</span><span class="nav-blurb">Hooks, MCP servers, instructions, and editor tasks.</span></a></li>
+            <li><a href="./offline/"><span class="nav-name">Offline</span><span class="nav-blurb">No account, no telemetry, no network by default.</span></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="nav-menu">
+      <button type="button" class="nav-trigger" popovertarget="menu-integrations">Integrations</button>
+      <div class="nav-panel" id="menu-integrations" popover>
+        <div class="nav-panel-head">
+          <p class="nav-panel-title">Integrations</p>
+          <p class="nav-panel-intro">Agent hosts, the MCP server, and CI.</p>
+        </div>
+        <div class="nav-panel-body">
+          <ul class="nav-tiles">
+            <li><a href="./claude-code/"><span class="nav-name">Claude Code</span><span class="nav-blurb">gate on edits and commands, turn at Stop.</span></a></li>
+            <li><a href="./cursor/"><span class="nav-name">Cursor</span><span class="nav-blurb">The same hooks, plus a rules file.</span></a></li>
+            <li><a href="./mcp/"><span class="nav-name">MCP</span><span class="nav-blurb">Four read-only tools the model can call.</span></a></li>
+            <li><a href="./ci/"><span class="nav-name">CI</span><span class="nav-blurb">SARIF, JUnit, and exit codes.</span></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="nav-menu">
+      <button type="button" class="nav-trigger" popovertarget="menu-learn">Learn</button>
+      <div class="nav-panel" id="menu-learn" popover>
+        <div class="nav-panel-head">
+          <p class="nav-panel-title">Learn</p>
+          <p class="nav-panel-intro">How to read a finding, and what a scan cannot see.</p>
+        </div>
+        <div class="nav-panel-body">
+          <ul class="nav-tiles">
+            <li><a href="./exposure/"><span class="nav-name">Exposure</span><span class="nav-blurb">Which finding to fix first.</span></a></li>
+            <li><a href="./runtimes/"><span class="nav-name">Runtimes</span><span class="nav-blurb">Does the fix run on Bun, Deno, or Workers?</span></a></li>
+            <li><a href="./owasp/"><span class="nav-name">OWASP coverage</span><span class="nav-blurb">Mapped categories, and the gaps.</span></a></li>
+            <li><a href="./asi/"><span class="nav-name">ASI coverage</span><span class="nav-blurb">Agent-config rules against OWASP ASI.</span></a></li>
+            <li><a href="./benchmark/"><span class="nav-name">Benchmark</span><span class="nav-blurb">How noisy it is, and why there is no number yet.</span></a></li>
+          </ul>
+          <p class="nav-compare"><span>Compared with</span> <a href="./vs/semgrep/"><span class="nav-name">Semgrep</span></a> <a href="./vs/snyk/"><span class="nav-name">Snyk</span></a> <a href="./vs/claude-security/"><span class="nav-name">model review</span></a> <a href="./vs/eslint-plugin-security/"><span class="nav-name">eslint-plugin-security</span></a></p>
+        </div>
+      </div>
+    </div>
+    <a class="nav-link" href="./rules/">Rules</a>
+    <a class="nav-link" href="./changelog/">Changelog</a>
   </nav>
+  <a class="header-cta" href="https://github.com/suthat/owlwarden" rel="noopener">GitHub <span aria-hidden="true">↗</span></a>
 </header>
 
 <nav class="breadcrumbs" aria-label="Breadcrumb">
@@ -154,6 +204,7 @@
     <div class="hero-actions"><a class="button button-primary" href="https://www.npmjs.com/package/owlwarden">Install</a>
 <a class="button button-secondary" href="./rules/">Read 25 rules</a>
 <a class="button button-secondary" href="./turn/">How turn works</a></div>
+    <a class="hero-proof" href="#mcp-grade"><span class="grade-mark" aria-hidden="true">A</span><span><strong>MCP server graded A for security</strong> by mcprush</span></a>
   </div>
   <figure class="product-visual finding-visual" aria-label="Two owlwarden findings from one local scan">
   <div class="visual-chrome" aria-hidden="true">
@@ -246,14 +297,70 @@ npx owlwarden vet .         # your agent&#39;s config</code></pre>
 <pre class="code"><code class="language-bash">owlwarden init --claude-code   # Stop hook is turn --hook, not gate
 owlwarden init --cursor
 owlwarden init --generic       # any host that can run a process</code></pre>
-<p>
-  <a href="./turn/">turn</a> /
-  <a href="./claude-code/">Claude Code</a> / <a href="./cursor/">Cursor</a> /
-  <a href="./mcp/">MCP</a> / <a href="./ci/">CI</a> /
-  <a href="./vet/">vet</a> / <a href="./seal/">seal</a> /
-  <a href="./exposure/">exposure</a> / <a href="./runtimes/">runtimes</a> /
-  <a href="./benchmark/">benchmark</a> / <a href="./changelog/">Changelog</a>
-</p>
+
+<h2 id="mcp-grade">Graded A for security by mcprush</h2>
+<div class="grade">
+  <a class="grade-card" href="https://mcprush.com/suthat/owlwarden-mcp" rel="noopener"><img src="https://mcprush.com/badge/owlwarden-mcp/card.svg" width="380" height="200" alt="Owlwarden MCP server on mcprush" loading="lazy" decoding="async" referrerpolicy="no-referrer"></a>
+  <div class="grade-body">
+    <p>
+      <strong>mcprush, a directory of MCP servers, graded owlwarden's A for
+      security.</strong> It is the server <code>init</code> registers for
+      Claude Code and Cursor:
+    </p>
+    <ul class="grade-facts">
+      <li>Four read-only tools. It can scan and explain; it cannot write a file.</li>
+      <li>No network, no account, no telemetry.</li>
+      <li>Paths stay under the workspace root.</li>
+      <li>Registered as <code>node_modules/.bin/owlwarden</code>, so nothing is fetched when the host starts it.</li>
+    </ul>
+    <p class="grade-note">
+      The card is mcprush's and loads from mcprush.com, so it shows their
+      current grade rather than our description of it. Nothing else on this
+      site comes from another host. <a href="./mcp/">How the MCP server works</a>.
+    </p>
+  </div>
+</div>
+
+<h2>Where to go next</h2>
+<div class="directory">
+  <div class="directory-group">
+    <h3>Product</h3>
+    <ul>
+      <li><a href="./turn/"><span class="name">turn</span><span class="blurb">Only what this turn introduced.</span></a></li>
+      <li><a href="./vet/"><span class="name">vet</span><span class="blurb">Check a repository before you open it.</span></a></li>
+      <li><a href="./seal/"><span class="name">seal</span><span class="blurb">Notice when the agent&#39;s execution surface moves.</span></a></li>
+      <li><a href="./agent-config-security/"><span class="name">Agent config</span><span class="blurb">Hooks, MCP servers, instructions, and editor tasks.</span></a></li>
+      <li><a href="./offline/"><span class="name">Offline</span><span class="blurb">No account, no telemetry, no network by default.</span></a></li>
+    </ul>
+  </div>
+  <div class="directory-group">
+    <h3>Integrations</h3>
+    <ul>
+      <li><a href="./claude-code/"><span class="name">Claude Code</span><span class="blurb">gate on edits and commands, turn at Stop.</span></a></li>
+      <li><a href="./cursor/"><span class="name">Cursor</span><span class="blurb">The same hooks, plus a rules file.</span></a></li>
+      <li><a href="./mcp/"><span class="name">MCP</span><span class="blurb">Four read-only tools the model can call.</span></a></li>
+      <li><a href="./ci/"><span class="name">CI</span><span class="blurb">SARIF, JUnit, and exit codes.</span></a></li>
+    </ul>
+  </div>
+  <div class="directory-group">
+    <h3>Learn</h3>
+    <ul>
+      <li><a href="./exposure/"><span class="name">Exposure</span><span class="blurb">Which finding to fix first.</span></a></li>
+      <li><a href="./runtimes/"><span class="name">Runtimes</span><span class="blurb">Does the fix run on Bun, Deno, or Workers?</span></a></li>
+      <li><a href="./owasp/"><span class="name">OWASP coverage</span><span class="blurb">Mapped categories, and the gaps.</span></a></li>
+      <li><a href="./asi/"><span class="name">ASI coverage</span><span class="blurb">Agent-config rules against OWASP ASI.</span></a></li>
+      <li><a href="./benchmark/"><span class="name">Benchmark</span><span class="blurb">How noisy it is, and why there is no number yet.</span></a></li>
+    </ul>
+    <p class="directory-compare">Compared with <a href="./vs/semgrep/">Semgrep</a>, <a href="./vs/snyk/">Snyk</a>, <a href="./vs/claude-security/">model review</a>, <a href="./vs/eslint-plugin-security/">eslint-plugin-security</a>.</p>
+  </div>
+  <div class="directory-group">
+    <h3>Reference</h3>
+    <ul>
+      <li><a href="./rules/"><span class="name">Rules</span><span class="blurb">Every rule, what triggers it, and the fix for your framework.</span></a></li>
+      <li><a href="./changelog/"><span class="name">Changelog</span><span class="blurb">Release notes, and rule ids that changed.</span></a></li>
+    </ul>
+  </div>
+</div>
 
 <h2>Common questions</h2>
 <details>
@@ -293,16 +400,55 @@ owlwarden init --generic       # any host that can run a process</code></pre>
     <img src="./favicon.svg" width="36" height="36" alt="">
     <p><strong>owlwarden 1.3.1</strong><br>Local security checks for Node apps and coding-agent configuration.</p>
   </div>
-  <nav aria-label="Footer">
-    <a href="./turn/">turn</a>
-    <a href="./rules/">All rules</a>
-    <a href="./owasp/">OWASP coverage</a>
-    <a href="./asi/">ASI coverage</a>
-    <a href="./offline/">Offline</a>
-    <a href="./ci/">CI</a>
-    <a href="./mcp/">MCP</a>
-    <a href="https://github.com/suthat/owlwarden/blob/main/RULES.md" rel="noopener">RULES.md</a>
-    <a href="https://www.npmjs.com/package/owlwarden" rel="noopener">npm</a>
+  <nav aria-label="Footer" class="footer-nav">
+    <div class="footer-group">
+      <p class="footer-title">Product</p>
+      <ul>
+        <li><a href="./turn/">turn</a></li>
+        <li><a href="./vet/">vet</a></li>
+        <li><a href="./seal/">seal</a></li>
+        <li><a href="./agent-config-security/">Agent config</a></li>
+        <li><a href="./offline/">Offline</a></li>
+      </ul>
+    </div>
+    <div class="footer-group">
+      <p class="footer-title">Integrations</p>
+      <ul>
+        <li><a href="./claude-code/">Claude Code</a></li>
+        <li><a href="./cursor/">Cursor</a></li>
+        <li><a href="./mcp/">MCP</a></li>
+        <li><a href="./ci/">CI</a></li>
+      </ul>
+    </div>
+    <div class="footer-group">
+      <p class="footer-title">Learn</p>
+      <ul>
+        <li><a href="./exposure/">Exposure</a></li>
+        <li><a href="./runtimes/">Runtimes</a></li>
+        <li><a href="./owasp/">OWASP coverage</a></li>
+        <li><a href="./asi/">ASI coverage</a></li>
+        <li><a href="./benchmark/">Benchmark</a></li>
+      </ul>
+    </div>
+    <div class="footer-group">
+      <p class="footer-title">Compare</p>
+      <ul>
+        <li><a href="./vs/semgrep/">vs Semgrep</a></li>
+        <li><a href="./vs/snyk/">vs Snyk</a></li>
+        <li><a href="./vs/claude-security/">vs model review</a></li>
+        <li><a href="./vs/eslint-plugin-security/">vs eslint-plugin-security</a></li>
+      </ul>
+    </div>
+    <div class="footer-group">
+      <p class="footer-title">Project</p>
+      <ul>
+        <li><a href="./rules/">Rules</a></li>
+        <li><a href="./changelog/">Changelog</a></li>
+        <li><a href="https://github.com/suthat/owlwarden/blob/main/RULES.md" rel="noopener">RULES.md <span aria-hidden="true">↗</span></a></li>
+        <li><a href="https://github.com/suthat/owlwarden" rel="noopener">GitHub <span aria-hidden="true">↗</span></a></li>
+        <li><a href="https://www.npmjs.com/package/owlwarden" rel="noopener">npm <span aria-hidden="true">↗</span></a></li>
+      </ul>
+    </div>
   </nav>
   <p class="licence">No account / no telemetry / MIT OR Apache-2.0 / <code>npx owlwarden turn</code></p>
 </footer>

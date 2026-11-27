@@ -1,4 +1,4 @@
-import { chip, code, esc } from "./layout.mjs";
+import { chip, code, esc, mcprushCard, renderDirectory } from "./layout.mjs";
 import { marketingHero } from "./marketing.mjs";
 import { renderFrame } from "./samples.mjs";
 
@@ -186,14 +186,32 @@ ${code(
   nobody asked it to touch.
 </p>
 ${code("bash", "owlwarden init --claude-code   # Stop hook is turn --hook, not gate\nowlwarden init --cursor\nowlwarden init --generic       # any host that can run a process")}
-<p>
-  <a href="./turn/">turn</a> ·
-  <a href="./claude-code/">Claude Code</a> · <a href="./cursor/">Cursor</a> ·
-  <a href="./mcp/">MCP</a> · <a href="./ci/">CI</a> ·
-  <a href="./vet/">vet</a> · <a href="./seal/">seal</a> ·
-  <a href="./exposure/">exposure</a> · <a href="./runtimes/">runtimes</a> ·
-  <a href="./benchmark/">benchmark</a> · <a href="./changelog/">Changelog</a>
-</p>
+
+<h2 id="mcp-grade">Graded A for security by mcprush</h2>
+<div class="grade">
+  ${mcprushCard()}
+  <div class="grade-body">
+    <p>
+      <strong>mcprush, a directory of MCP servers, graded owlwarden's A for
+      security.</strong> It is the server <code>init</code> registers for
+      Claude Code and Cursor:
+    </p>
+    <ul class="grade-facts">
+      <li>Four read-only tools. It can scan and explain; it cannot write a file.</li>
+      <li>No network, no account, no telemetry.</li>
+      <li>Paths stay under the workspace root.</li>
+      <li>Registered as <code>node_modules/.bin/owlwarden</code>, so nothing is fetched when the host starts it.</li>
+    </ul>
+    <p class="grade-note">
+      The card is mcprush's and loads from mcprush.com, so it shows their
+      current grade rather than our description of it. Nothing else on this
+      site comes from another host. <a href="./mcp/">How the MCP server works</a>.
+    </p>
+  </div>
+</div>
+
+<h2>Where to go next</h2>
+${renderDirectory("./")}
 
 <h2>Common questions</h2>
 <details>
@@ -563,6 +581,17 @@ ${code("bash", "npx owlwarden mcp")}
   <a href="../claude-code/">hooks</a> for checks that must run after edits or
   before commands.
 </p>
+
+<h2>Independent grade</h2>
+<div class="grade">
+  ${mcprushCard()}
+  <p>
+    mcprush lists the server and grades it independently. The card is theirs
+    and loads from mcprush.com, so it changes when their grade does. It is the
+    only image on this site served by another host: it loads lazily and sends
+    no referrer.
+  </p>
+</div>
 
 <h2>Configuration</h2>
 <p>
@@ -1574,7 +1603,7 @@ function benchmark() {
       { label: "benchmark", href: "benchmark/" },
     ],
     body: `
-<div class="callout">
+<div class="note">
   <p>
     <strong>There is no number on this page yet, and that is the honest state.</strong>
     The harness, the corpus format, and the build gate ship in 1.2 and are tested.
