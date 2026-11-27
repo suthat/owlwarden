@@ -1,4 +1,4 @@
-import { chip, code, esc } from "./layout.mjs";
+import { chip, code, esc, renderDirectory } from "./layout.mjs";
 import { marketingHero } from "./marketing.mjs";
 import { renderFrame } from "./samples.mjs";
 
@@ -186,14 +186,8 @@ ${code(
   nobody asked it to touch.
 </p>
 ${code("bash", "owlwarden init --claude-code   # Stop hook is turn --hook, not gate\nowlwarden init --cursor\nowlwarden init --generic       # any host that can run a process")}
-<p>
-  <a href="./turn/">turn</a> ·
-  <a href="./claude-code/">Claude Code</a> · <a href="./cursor/">Cursor</a> ·
-  <a href="./mcp/">MCP</a> · <a href="./ci/">CI</a> ·
-  <a href="./vet/">vet</a> · <a href="./seal/">seal</a> ·
-  <a href="./exposure/">exposure</a> · <a href="./runtimes/">runtimes</a> ·
-  <a href="./benchmark/">benchmark</a> · <a href="./changelog/">Changelog</a>
-</p>
+<h2>Where to go next</h2>
+${renderDirectory("./")}
 
 <h2>Common questions</h2>
 <details>

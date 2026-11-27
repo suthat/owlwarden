@@ -41,14 +41,64 @@ function jsonLd(value) {
  */
 export const problems = [];
 
-/** The one ordered set of destinations used by every generated page. */
-const PRIMARY_NAV_ITEMS = [
-  { section: "Rules", label: "Rules", href: "rules/" },
-  { section: "Agent config", label: "Agent config", href: "agent-config-security/" },
-  { section: "turn", label: "turn", href: "turn/" },
-  { section: "vet", label: "vet", href: "vet/" },
-  { section: "Offline", label: "Offline", href: "offline/" },
-  { section: "Coverage", label: "Coverage", href: "owasp/" },
+/**
+ * Every hand-written destination, grouped the way a reader looks for it.
+ *
+ * The header menus, the footer, and the homepage directory all render from
+ * these two lists, so a page cannot be reachable from one of them and missing
+ * from another. It used to be possible: nine pages were linked only from a row
+ * of inline links at the end of one homepage paragraph, which nobody read as
+ * navigation. `check-site.mjs` keeps its own copy of the header order on
+ * purpose — it exists to notice this list drifting, not to agree with it.
+ */
+export const NAV_GROUPS = [
+  {
+    id: "product",
+    label: "Product",
+    intro: "What owlwarden checks, and how it stays local.",
+    items: [
+      { label: "turn", href: "turn/", blurb: "Only what this turn introduced." },
+      { label: "vet", href: "vet/", blurb: "Check a repository before you open it." },
+      { label: "seal", href: "seal/", blurb: "Notice when the agent's execution surface moves." },
+      { label: "Agent config", href: "agent-config-security/", blurb: "Hooks, MCP servers, instructions, and editor tasks." },
+      { label: "Offline", href: "offline/", blurb: "No account, no telemetry, no network by default." },
+    ],
+  },
+  {
+    id: "integrations",
+    label: "Integrations",
+    intro: "Agent hosts, the MCP server, and CI.",
+    items: [
+      { label: "Claude Code", href: "claude-code/", blurb: "gate on edits and commands, turn at Stop." },
+      { label: "Cursor", href: "cursor/", blurb: "The same hooks, plus a rules file." },
+      { label: "MCP", href: "mcp/", blurb: "Four read-only tools the model can call." },
+      { label: "CI", href: "ci/", blurb: "SARIF, JUnit, and exit codes." },
+    ],
+  },
+  {
+    id: "learn",
+    label: "Learn",
+    intro: "How to read a finding, and what a scan cannot see.",
+    items: [
+      { label: "Exposure", href: "exposure/", blurb: "Which finding to fix first." },
+      { label: "Runtimes", href: "runtimes/", blurb: "Does the fix run on Bun, Deno, or Workers?" },
+      { label: "OWASP coverage", href: "owasp/", blurb: "Mapped categories, and the gaps." },
+      { label: "ASI coverage", href: "asi/", blurb: "Agent-config rules against OWASP ASI." },
+      { label: "Benchmark", href: "benchmark/", blurb: "How noisy it is, and why there is no number yet." },
+    ],
+    compare: [
+      { label: "Semgrep", href: "vs/semgrep/" },
+      { label: "Snyk", href: "vs/snyk/" },
+      { label: "model review", href: "vs/claude-security/" },
+      { label: "eslint-plugin-security", href: "vs/eslint-plugin-security/" },
+    ],
+  },
+];
+
+/** Destinations with no menu of their own: one click away, from every page. */
+export const NAV_LINKS = [
+  { label: "Rules", href: "rules/", blurb: "Every rule, what triggers it, and the fix for your framework." },
+  { label: "Changelog", href: "changelog/", blurb: "Release notes, and rule ids that changed." },
 ];
 
 /**
@@ -183,10 +233,10 @@ ${jsonLd({ "@context": "https://schema.org", "@graph": graph })}
     <img src="${up}favicon.svg" width="32" height="32" alt="">
     <span>owlwarden</span>
   </a>
-  <nav aria-label="Primary">
+  <nav aria-label="Primary" class="primary-nav">
 ${renderPrimaryNavigation(page.path, up)}
-    <a class="nav-cta" href="https://github.com/suthat/owlwarden" rel="noopener">GitHub <span aria-hidden="true">↗</span></a>
   </nav>
+  <a class="header-cta" href="https://github.com/suthat/owlwarden" rel="noopener">GitHub <span aria-hidden="true">↗</span></a>
 </header>
 
 <nav class="breadcrumbs" aria-label="Breadcrumb">
@@ -213,16 +263,8 @@ ${page.body}
     <img src="${up}favicon.svg" width="36" height="36" alt="">
     <p><strong>owlwarden ${esc(version)}</strong><br>Local security checks for Node apps and coding-agent configuration.</p>
   </div>
-  <nav aria-label="Footer">
-    <a href="${up}turn/">turn</a>
-    <a href="${up}rules/">All rules</a>
-    <a href="${up}owasp/">OWASP coverage</a>
-    <a href="${up}asi/">ASI coverage</a>
-    <a href="${up}offline/">Offline</a>
-    <a href="${up}ci/">CI</a>
-    <a href="${up}mcp/">MCP</a>
-    <a href="https://github.com/suthat/owlwarden/blob/main/RULES.md" rel="noopener">RULES.md</a>
-    <a href="https://www.npmjs.com/package/owlwarden" rel="noopener">npm</a>
+  <nav aria-label="Footer" class="footer-nav">
+${renderFooterNavigation(up)}
   </nav>
   <p class="licence">No account / no telemetry / MIT OR Apache-2.0 / <code>npx owlwarden turn</code></p>
 </footer>
@@ -239,29 +281,128 @@ function normalizeSiteCopy(html) {
     .replaceAll("–", "-");
 }
 
-/** Renders the shared primary navigation with one page-aware current marker. */
+/** Renders the primary navigation: one menu per group, then the direct links. */
 function renderPrimaryNavigation(path, up) {
-  const current = primarySection(path);
-  return PRIMARY_NAV_ITEMS.map((item) => {
-    const marker = item.section === current ? ' aria-current="page"' : "";
-    return `    <a href="${up}${item.href}"${marker}>${esc(item.label)}</a>`;
-  }).join("\n");
+  const current = currentHref(path);
+  const menus = NAV_GROUPS.map((group) => renderMenu(group, current, up));
+  const links = NAV_LINKS.map(
+    (link) => `    <a class="nav-link" href="${up}${link.href}"${here(link.href, current)}>${esc(link.label)}</a>`,
+  );
+  return [...menus, ...links].join("\n");
 }
 
-/** Maps related product pages to the section readers use to reach them. */
-function primarySection(path) {
-  if (path.startsWith("rules/")) return "Rules";
-  if (
-    path.startsWith("agent-config-security/") ||
-    path.startsWith("claude-code/") ||
-    path.startsWith("cursor/") ||
-    path.startsWith("mcp/")
-  ) return "Agent config";
-  if (path.startsWith("vet/")) return "vet";
-  if (path.startsWith("turn/")) return "turn";
-  if (path.startsWith("offline/")) return "Offline";
-  if (path.startsWith("owasp/") || path.startsWith("asi/")) return "Coverage";
-  return undefined;
+/**
+ * One header menu.
+ *
+ * A popover rather than a script: the browser opens it from its button, closes
+ * it on Escape or a click outside, keeps one open at a time, and tells
+ * assistive technology whether it is expanded. Where popovers are unsupported
+ * the buttons hide themselves, and the footer still lists every page.
+ */
+function renderMenu(group, current, up) {
+  const id = `menu-${group.id}`;
+  const entries = [...group.items, ...(group.compare ?? [])];
+  const section = entries.some((item) => item.href === current) ? " is-current" : "";
+  const tiles = group.items
+    .map(
+      (item) =>
+        `            <li><a href="${up}${item.href}"${here(item.href, current)}><span class="nav-name">${esc(item.label)}</span><span class="nav-blurb">${esc(item.blurb)}</span></a></li>`,
+    )
+    .join("\n");
+  const compare = group.compare
+    ? `\n          <p class="nav-compare"><span>Compared with</span>${group.compare
+        .map((item) => ` <a href="${up}${item.href}"${here(item.href, current)}><span class="nav-name">${esc(item.label)}</span></a>`)
+        .join("")}</p>`
+    : "";
+
+  return `    <div class="nav-menu">
+      <button type="button" class="nav-trigger${section}" popovertarget="${id}">${esc(group.label)}</button>
+      <div class="nav-panel" id="${id}" popover>
+        <div class="nav-panel-head">
+          <p class="nav-panel-title">${esc(group.label)}</p>
+          <p class="nav-panel-intro">${esc(group.intro)}</p>
+        </div>
+        <div class="nav-panel-body">
+          <ul class="nav-tiles">
+${tiles}
+          </ul>${compare}
+        </div>
+      </div>
+    </div>`;
+}
+
+/**
+ * The footer: every destination, always expanded.
+ *
+ * Nothing here depends on a menu opening, so it is also the fallback for a
+ * browser without popovers, and the one place a reader can see the whole site
+ * at once without clicking anything.
+ */
+function renderFooterNavigation(up) {
+  const internal = (item, label = item.label) => `<a href="${up}${item.href}">${esc(label)}</a>`;
+  const external = (href, label) =>
+    `<a href="${href}" rel="noopener">${esc(label)} <span aria-hidden="true">↗</span></a>`;
+  const column = (title, links) => `    <div class="footer-group">
+      <p class="footer-title">${esc(title)}</p>
+      <ul>
+${links.map((link) => `        <li>${link}</li>`).join("\n")}
+      </ul>
+    </div>`;
+  const compare = NAV_GROUPS.flatMap((group) => group.compare ?? []);
+
+  return [
+    ...NAV_GROUPS.map((group) => column(group.label, group.items.map((item) => internal(item)))),
+    column("Compare", compare.map((item) => internal(item, `vs ${item.label}`))),
+    column("Project", [
+      ...NAV_LINKS.map((item) => internal(item)),
+      external("https://github.com/suthat/owlwarden/blob/main/RULES.md", "RULES.md"),
+      external("https://github.com/suthat/owlwarden", "GitHub"),
+      external("https://www.npmjs.com/package/owlwarden", "npm"),
+    ]),
+  ].join("\n");
+}
+
+/**
+ * The homepage's map of the site, from the same lists as the header menus.
+ *
+ * It replaces a row of eleven inline links at the end of a paragraph. Each
+ * entry says what the page answers, because a bare "exposure" or "seal" means
+ * nothing to someone who has not read the page yet.
+ */
+export function renderDirectory(up) {
+  const entry = (item) =>
+    `      <li><a href="${up}${item.href}"><span class="name">${esc(item.label)}</span><span class="blurb">${esc(item.blurb)}</span></a></li>`;
+  const groups = [...NAV_GROUPS, { label: "Reference", items: NAV_LINKS }];
+
+  return `<div class="directory">
+${groups
+  .map((group) => {
+    const compare = group.compare
+      ? `\n    <p class="directory-compare">Compared with ${group.compare
+          .map((item) => `<a href="${up}${item.href}">${esc(item.label)}</a>`)
+          .join(", ")}.</p>`
+      : "";
+    return `  <div class="directory-group">
+    <h3>${esc(group.label)}</h3>
+    <ul>
+${group.items.map(entry).join("\n")}
+    </ul>${compare}
+  </div>`;
+  })
+  .join("\n")}
+</div>`;
+}
+
+/** The navigation entry that stands for `path`. Every rule page belongs to Rules. */
+function currentHref(path) {
+  if (path.startsWith("rules/")) return "rules/";
+  const entries = [...NAV_GROUPS.flatMap((group) => [...group.items, ...(group.compare ?? [])]), ...NAV_LINKS];
+  return entries.find((item) => item.href === path)?.href;
+}
+
+/** The current-page marker, on the one link that stands for this page. */
+function here(href, current) {
+  return href === current ? ' aria-current="page"' : "";
 }
 
 /** Renders the one product-hero interface used by every marketing page. */

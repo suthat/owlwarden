@@ -41,6 +41,11 @@ const ALLOWED_HOSTS = new Set([
   new URL(site).host,
 ]);
 
+// A page loads nothing from another host. An exception has to be listed here,
+// with the pages it may appear on, so that it is a decision for a reviewer
+// rather than a side effect of a template edit.
+const EXTERNAL_RESOURCES = new Map();
+
 const pages = await collect(siteDir, ".html");
 assert(pages.length > 50, `expected the generated site, found ${pages.length} pages`);
 
@@ -67,16 +72,34 @@ const PRODUCT_PAGES = new Set([
 
 // Navigation is part of the site contract, not page content. Every generated
 // page must expose the same destinations in the same order; only the current
-// section marker may vary. Keeping this assertion independent of the renderer
-// catches a stale committed page as well as an accidental layout fork.
+// markers may vary. Keeping this assertion independent of the renderer catches
+// a stale committed page as well as an accidental layout fork.
+//
+// The links are listed in markup order: each menu's pages, then the direct
+// links. Every hand-written page is here, because nine of them were once
+// reachable only from a row of inline links on the homepage.
+const PRIMARY_MENUS = ["Product", "Integrations", "Learn"];
 const PRIMARY_NAV = [
-  { label: "Rules", href: `${site}/rules/` },
-  { label: "Agent config", href: `${site}/agent-config-security/` },
   { label: "turn", href: `${site}/turn/` },
   { label: "vet", href: `${site}/vet/` },
+  { label: "seal", href: `${site}/seal/` },
+  { label: "Agent config", href: `${site}/agent-config-security/` },
   { label: "Offline", href: `${site}/offline/` },
-  { label: "Coverage", href: `${site}/owasp/` },
-  { label: "GitHub ↗", href: "https://github.com/suthat/owlwarden" },
+  { label: "Claude Code", href: `${site}/claude-code/` },
+  { label: "Cursor", href: `${site}/cursor/` },
+  { label: "MCP", href: `${site}/mcp/` },
+  { label: "CI", href: `${site}/ci/` },
+  { label: "Exposure", href: `${site}/exposure/` },
+  { label: "Runtimes", href: `${site}/runtimes/` },
+  { label: "OWASP coverage", href: `${site}/owasp/` },
+  { label: "ASI coverage", href: `${site}/asi/` },
+  { label: "Benchmark", href: `${site}/benchmark/` },
+  { label: "Semgrep", href: `${site}/vs/semgrep/` },
+  { label: "Snyk", href: `${site}/vs/snyk/` },
+  { label: "model review", href: `${site}/vs/claude-security/` },
+  { label: "eslint-plugin-security", href: `${site}/vs/eslint-plugin-security/` },
+  { label: "Rules", href: `${site}/rules/` },
+  { label: "Changelog", href: `${site}/changelog/` },
 ];
 
 // Site copy should read like one developer explaining a tool to another.
@@ -224,6 +247,7 @@ for (const page of pages) {
   }
 
   // --- the promises this site makes about itself --------------------------
+  checkExternalResources(path, html);
   if (/<script\b(?![^>]*type="application\/ld\+json")/.test(html)) {
     fail(path, "a script tag: this site ships no JavaScript");
   }
@@ -435,23 +459,77 @@ function escapeRegExp(text) {
   return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-/** Checks the shared top navigation and its page-aware current marker. */
+/**
+ * Fails anything a page would fetch from another host, unless it is pinned.
+ *
+ * Links are checked separately, against `ALLOWED_HOSTS`: following a link is
+ * the reader's choice, while a `src` is fetched the moment the page renders.
+ */
+function checkExternalResources(path, html) {
+  const loaders = /\brel="[^"]*\b(?:stylesheet|icon|preload|prefetch|modulepreload|manifest)\b/;
+  for (const [tag] of html.matchAll(/<[a-z][a-z0-9-]*\b[^>]*>/g)) {
+    const urls = [...tag.matchAll(/\s(src|srcset|poster|data)="([^"]*)"/g)].flatMap(([, name, value]) =>
+      name === "srcset" ? value.split(",").map((part) => part.trim().split(/\s+/)[0]) : [value],
+    );
+    if (tag.startsWith("<link") && loaders.test(tag)) urls.push(one(tag, /\shref="([^"]*)"/) ?? "");
+
+    for (const url of urls) {
+      if (!/^(?:[a-z][a-z0-9+.-]*:)?\/\//i.test(url) || new URL(url, `${site}/`).host === new URL(site).host) {
+        continue;
+      }
+      if (!tag.startsWith("<img") || !EXTERNAL_RESOURCES.get(url)?.has(path)) {
+        fail(path, `loads ${url} from another host`);
+        continue;
+      }
+      if (!/\sloading="lazy"/.test(tag)) fail(path, `${url} must load lazily`);
+      if (!/\sreferrerpolicy="no-referrer"/.test(tag)) fail(path, `${url} must not send a referrer`);
+    }
+  }
+}
+
+/** Checks the shared top navigation, its menus, and the page-aware current markers. */
 function checkPrimaryNavigation(path, html) {
   const header = one(html, /<header class="site-header">([\s\S]*?)<\/header>/);
   if (!header) {
     fail(path, "no shared site header");
     return;
   }
-  const nav = one(header, /<nav aria-label="Primary">([\s\S]*?)<\/nav>/);
+  if (!header.includes('<a class="header-cta" href="https://github.com/suthat/owlwarden"')) {
+    fail(path, "no GitHub link in the site header");
+  }
+  const nav = one(header, /<nav aria-label="Primary"[^>]*>([\s\S]*?)<\/nav>/);
   if (!nav) {
     fail(path, "no primary navigation in the site header");
     return;
   }
 
+  // A menu is a button and the popover it opens. One whose target is missing
+  // is a button that does nothing, which no other check would notice.
+  const menus = nav
+    .split('<div class="nav-menu">')
+    .slice(1)
+    .map((menu) => menu.split('<a class="nav-link"')[0]);
+  const menuLabels = menus.map((menu) => one(menu, /<button[^>]*>([^<]*)<\/button>/));
+  if (menuLabels.join(",") !== PRIMARY_MENUS.join(",")) {
+    fail(path, `primary menus are ${menuLabels.join(", ")}, expected ${PRIMARY_MENUS.join(", ")}`);
+  }
+  for (const menu of menus) {
+    const target = one(menu, /popovertarget="([^"]+)"/);
+    if (!target || !menu.includes(`id="${target}" popover>`)) {
+      fail(path, `the ${one(menu, /<button[^>]*>([^<]*)<\/button>/)} menu opens nothing`);
+    }
+    const marked = /class="nav-trigger is-current"/.test(menu);
+    if (marked !== menu.includes('aria-current="page"')) {
+      fail(path, `the ${one(menu, /<button[^>]*>([^<]*)<\/button>/)} menu's current marker disagrees with its links`);
+    }
+  }
+
   const pageUrl = `${site}/${path.replace(/index\.html$/, "")}`;
   const actual = [...nav.matchAll(/<a([^>]*)href="([^"]+)"([^>]*)>([\s\S]*?)<\/a>/g)].map(
     (match) => ({
-      label: match[4].replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim(),
+      label: (one(match[4], /<span class="nav-name">([^<]*)<\/span>/) ?? match[4].replace(/<[^>]+>/g, ""))
+        .replace(/\s+/g, " ")
+        .trim(),
       href: new URL(match[2], pageUrl).href,
       current: `${match[1]} ${match[3]}`.includes('aria-current="page"'),
     }),
@@ -479,20 +557,11 @@ function checkPrimaryNavigation(path, html) {
   }
 }
 
-/** Maps a generated page to the primary product section readers are in. */
+/** The primary link a page marks current: its own entry, or Rules for a rule page. */
 function primarySection(path) {
   if (path.startsWith("rules/")) return "Rules";
-  if (
-    path.startsWith("agent-config-security/") ||
-    path.startsWith("claude-code/") ||
-    path.startsWith("cursor/") ||
-    path.startsWith("mcp/")
-  ) return "Agent config";
-  if (path.startsWith("vet/")) return "vet";
-  if (path.startsWith("turn/")) return "turn";
-  if (path.startsWith("offline/")) return "Offline";
-  if (path.startsWith("owasp/") || path.startsWith("asi/")) return "Coverage";
-  return undefined;
+  const url = `${site}/${path.replace(/index\.html$/, "")}`;
+  return PRIMARY_NAV.find((link) => link.href === url)?.label;
 }
 
 /** Every file under `directory`, as site-relative paths. */

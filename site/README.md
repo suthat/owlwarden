@@ -44,16 +44,21 @@ pnpm site:check          # is it current, and is it correct?
 would generate?* and needs the native addon. `check-site.mjs` answers *is the
 committed site correct?* — one `<h1>` per page, a self-referencing canonical, a
 description that will not be truncated, valid JSON-LD, no heading-level jumps,
-no dead links across the whole graph, and no external host anywhere. It needs
-nothing but Node, which is why the Pages workflow can run it.
+no dead links across the whole graph, the same header menus on every page, and
+nothing fetched from another host. It needs nothing but Node, which is why the
+Pages workflow can run it.
 
 ## What is deliberately absent
 
-No JavaScript ships. No font CDN, no analytics, no tag manager, no third-party
-anything — a tool whose entire argument is that it sends nothing anywhere cannot
-have a page that makes three external requests before the reader has read a
-sentence. `check-site.mjs` refuses any host outside a short allowlist, and any
-`<script>` that is not JSON-LD.
+No JavaScript ships. No font CDN, no analytics, no tag manager — a tool whose
+entire argument is that it sends nothing anywhere cannot have a page that makes
+three external requests before the reader has read a sentence. `check-site.mjs`
+refuses a link to any host outside a short allowlist, anything a page would
+fetch from another host, and any `<script>` that is not JSON-LD.
+
+The header menus are popovers, not scripts. The browser opens one from its
+button and closes it on Escape or a click outside. Where popovers are not
+supported the buttons hide themselves, and the footer lists every page anyway.
 
 ## The icons
 
