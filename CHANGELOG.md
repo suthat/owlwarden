@@ -10,6 +10,29 @@ are listed here under Changed.
 
 ## [Unreleased]
 
+## [1.3.2] — 2026-11-27
+
+A documentation release, cut so the npm page shows the MCP server's grade. No
+new rules, commands, or flags, and nothing a scan reports has changed.
+
+### Added
+
+- **The MCP server's mcprush grade card** is on the npm page, after the lead
+  and the first commands rather than above them, and in the GitHub README.
+- **Each release is listed on the official MCP registry** by the Release
+  workflow, once npm serves every package. The listing can also be run alone.
+
+### Changed
+
+- **The site's header has menus that reach every page.** Nine pages, among them
+  Claude Code, Cursor, MCP and CI, were linked only from a row of inline links
+  at the end of one homepage paragraph. The footer now lists every page, and
+  the homepage has a directory.
+- **The site loads one thing from another host:** mcprush's grade card, on the
+  homepage and `/mcp/`, lazily and with no referrer. `site:check` now fails
+  anything else a page would fetch from another host. It used to check only
+  where links pointed.
+
 ## [1.3.1] — 2026-11-24
 
 A patch release: documentation that did not work, and dependencies with open
@@ -816,7 +839,8 @@ does and does not reach.
 - Bounded file count, file size, total bytes, and parser recursion depth, so a
   hostile repository cannot exhaust memory or the stack.
 
-[Unreleased]: https://github.com/suthat/owlwarden/compare/v1.3.1...HEAD
+[Unreleased]: https://github.com/suthat/owlwarden/compare/v1.3.2...HEAD
+[1.3.2]: https://github.com/suthat/owlwarden/compare/v1.3.1...v1.3.2
 [1.3.1]: https://github.com/suthat/owlwarden/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/suthat/owlwarden/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/suthat/owlwarden/compare/v1.1.0...v1.2.0
