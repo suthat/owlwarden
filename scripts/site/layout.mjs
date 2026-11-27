@@ -437,7 +437,7 @@ function renderHero(page) {
     <p class="eyebrow">${esc(page.hero.kicker)}</p>
     <h1>${esc(page.heading)}</h1>
     <p class="hero-summary">${page.hero.summary}</p>
-    <div class="hero-actions">${actions}</div>
+    <div class="hero-actions">${actions}</div>${page.hero.proof ? `\n    ${page.hero.proof}` : ""}
   </div>
   ${page.hero.visual}
 </section>`;

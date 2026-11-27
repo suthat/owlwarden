@@ -186,14 +186,28 @@ ${code(
   nobody asked it to touch.
 </p>
 ${code("bash", "owlwarden init --claude-code   # Stop hook is turn --hook, not gate\nowlwarden init --cursor\nowlwarden init --generic       # any host that can run a process")}
+
+<h2 id="mcp-grade">Graded A for security by mcprush</h2>
 <div class="grade">
   ${mcprushCard()}
-  <p>
-    For Claude Code and Cursor, <code>init</code> also adds the
-    <a href="./mcp/">MCP server</a>. mcprush lists it and grades it
-    independently. The card is theirs and loads from mcprush.com, so it changes
-    when their grade does. Nothing else on this site comes from another host.
-  </p>
+  <div class="grade-body">
+    <p>
+      <strong>mcprush, a directory of MCP servers, graded owlwarden's A for
+      security.</strong> It is the server <code>init</code> registers for
+      Claude Code and Cursor:
+    </p>
+    <ul class="grade-facts">
+      <li>Four read-only tools. It can scan and explain; it cannot write a file.</li>
+      <li>No network, no account, no telemetry.</li>
+      <li>Paths stay under the workspace root.</li>
+      <li>Registered as <code>node_modules/.bin/owlwarden</code>, so nothing is fetched when the host starts it.</li>
+    </ul>
+    <p class="grade-note">
+      The card is mcprush's and loads from mcprush.com, so it shows their
+      current grade rather than our description of it. Nothing else on this
+      site comes from another host. <a href="./mcp/">How the MCP server works</a>.
+    </p>
+  </div>
 </div>
 
 <h2>Where to go next</h2>

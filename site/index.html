@@ -32,7 +32,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="alternate" type="application/atom+xml" title="owlwarden releases" href="https://suthat.github.io/owlwarden/changelog/feed.xml">
-<link rel="stylesheet" href="./styles.css?v=983c85c618fc">
+<link rel="stylesheet" href="./styles.css?v=05829a94f537">
 
 <script type="application/ld+json">
 {
@@ -204,6 +204,7 @@
     <div class="hero-actions"><a class="button button-primary" href="https://www.npmjs.com/package/owlwarden">Install</a>
 <a class="button button-secondary" href="./rules/">Read 25 rules</a>
 <a class="button button-secondary" href="./turn/">How turn works</a></div>
+    <a class="hero-proof" href="#mcp-grade"><span class="grade-mark" aria-hidden="true">A</span><span><strong>MCP server graded A for security</strong> by mcprush</span></a>
   </div>
   <figure class="product-visual finding-visual" aria-label="Two owlwarden findings from one local scan">
   <div class="visual-chrome" aria-hidden="true">
@@ -296,14 +297,28 @@ npx owlwarden vet .         # your agent&#39;s config</code></pre>
 <pre class="code"><code class="language-bash">owlwarden init --claude-code   # Stop hook is turn --hook, not gate
 owlwarden init --cursor
 owlwarden init --generic       # any host that can run a process</code></pre>
+
+<h2 id="mcp-grade">Graded A for security by mcprush</h2>
 <div class="grade">
   <a class="grade-card" href="https://mcprush.com/suthat/owlwarden-mcp" rel="noopener"><img src="https://mcprush.com/badge/owlwarden-mcp/card.svg" width="380" height="200" alt="Owlwarden MCP server on mcprush" loading="lazy" decoding="async" referrerpolicy="no-referrer"></a>
-  <p>
-    For Claude Code and Cursor, <code>init</code> also adds the
-    <a href="./mcp/">MCP server</a>. mcprush lists it and grades it
-    independently. The card is theirs and loads from mcprush.com, so it changes
-    when their grade does. Nothing else on this site comes from another host.
-  </p>
+  <div class="grade-body">
+    <p>
+      <strong>mcprush, a directory of MCP servers, graded owlwarden's A for
+      security.</strong> It is the server <code>init</code> registers for
+      Claude Code and Cursor:
+    </p>
+    <ul class="grade-facts">
+      <li>Four read-only tools. It can scan and explain; it cannot write a file.</li>
+      <li>No network, no account, no telemetry.</li>
+      <li>Paths stay under the workspace root.</li>
+      <li>Registered as <code>node_modules/.bin/owlwarden</code>, so nothing is fetched when the host starts it.</li>
+    </ul>
+    <p class="grade-note">
+      The card is mcprush's and loads from mcprush.com, so it shows their
+      current grade rather than our description of it. Nothing else on this
+      site comes from another host. <a href="./mcp/">How the MCP server works</a>.
+    </p>
+  </div>
 </div>
 
 <h2>Where to go next</h2>

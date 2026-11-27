@@ -70,6 +70,9 @@ a:hover { text-decoration-color: var(--high); }
 
 /* Header and menus --------------------------------------------------- */
 
+/* An in-page link would otherwise land its target under the sticky header. */
+[id] { scroll-margin-top: calc(var(--header-h) + 1rem); }
+
 .site-header {
   position: sticky;
   top: 0;
@@ -633,7 +636,42 @@ th {
 .directory-compare { margin: 0.75rem 0 0; color: var(--ink-soft); font-size: 0.8rem; line-height: 1.55; }
 
 .grade { display: flex; flex-wrap: wrap; gap: 1.2rem 2rem; align-items: center; margin: 1.6rem 0 2rem; }
-.grade p { flex: 1 1 18rem; margin: 0; color: var(--ink-soft); }
+.grade > p { flex: 1 1 18rem; margin: 0; color: var(--ink-soft); }
+.grade-body { flex: 1 1 20rem; }
+.grade-body p { margin: 0 0 0.9rem; color: var(--ink-soft); }
+.grade-body strong { color: var(--ink); }
+.grade-facts { display: grid; gap: 0.45rem; margin: 0 0 1rem; padding: 0; list-style: none; font-size: 0.95rem; }
+.grade-facts li { position: relative; padding-left: 1.6rem; }
+.grade-facts li::before { position: absolute; left: 0.1rem; color: var(--confirmed); font-weight: 800; content: "✓"; }
+.grade-body .grade-note { margin: 0; font-size: 0.86rem; }
+
+/* The grade in the hero is text, so it costs no request above the fold. */
+.hero-proof {
+  display: inline-flex;
+  gap: 0.6rem;
+  align-items: center;
+  margin-top: 1.35rem;
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+  line-height: 1.4;
+  text-decoration: none;
+}
+.hero-proof strong { color: var(--ink); }
+.hero-proof:hover > span:last-child { text-decoration: underline; text-decoration-color: var(--high); }
+.grade-mark {
+  display: inline-grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 1.5px solid var(--confirmed);
+  border-radius: 50%;
+  background: rgba(44, 122, 82, 0.08);
+  color: var(--confirmed);
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  font-weight: 760;
+}
 .grade-card {
   display: block;
   flex: 0 1 380px;
