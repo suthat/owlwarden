@@ -17,6 +17,14 @@ updates:
     directory: /
     schedule:
       interval: monthly
+    # wasmtime stays on the patched 36.x line until a newer major has no open
+    # advisories. The floor in Cargo.toml moves by hand, once `cargo deny check`
+    # is clean on the new version. Left to itself, Dependabot proposes a major
+    # that check rejects, and since the rust group is one PR, that one bump
+    # holds back every safe update batched with it. 36.x patches still arrive.
+    ignore:
+      - dependency-name: wasmtime
+        update-types: ["version-update:semver-major"]
     groups:
       # oxc is pinned exactly on purpose (ADR 0005) — its AST is a
       # pre-1.0 API and a patch bump has broken visitors before. Kept in its

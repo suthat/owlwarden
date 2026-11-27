@@ -88,7 +88,7 @@ anyhow = "1"
 wat = "1"
 
 # Terminal output. anstream gives us correct ANSI handling on Windows consoles.
-anstream = "0.6"
+anstream = "1"
 anstyle = "1"
 
 insta = { version = "1", features = ["json"] }
