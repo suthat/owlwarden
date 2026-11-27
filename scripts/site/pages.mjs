@@ -1,4 +1,4 @@
-import { chip, code, esc, renderDirectory } from "./layout.mjs";
+import { chip, code, esc, mcprushCard, renderDirectory } from "./layout.mjs";
 import { marketingHero } from "./marketing.mjs";
 import { renderFrame } from "./samples.mjs";
 
@@ -186,6 +186,16 @@ ${code(
   nobody asked it to touch.
 </p>
 ${code("bash", "owlwarden init --claude-code   # Stop hook is turn --hook, not gate\nowlwarden init --cursor\nowlwarden init --generic       # any host that can run a process")}
+<div class="grade">
+  ${mcprushCard()}
+  <p>
+    For Claude Code and Cursor, <code>init</code> also adds the
+    <a href="./mcp/">MCP server</a>. mcprush lists it and grades it
+    independently. The card is theirs and loads from mcprush.com, so it changes
+    when their grade does. Nothing else on this site comes from another host.
+  </p>
+</div>
+
 <h2>Where to go next</h2>
 ${renderDirectory("./")}
 
@@ -557,6 +567,17 @@ ${code("bash", "npx owlwarden mcp")}
   <a href="../claude-code/">hooks</a> for checks that must run after edits or
   before commands.
 </p>
+
+<h2>Independent grade</h2>
+<div class="grade">
+  ${mcprushCard()}
+  <p>
+    mcprush lists the server and grades it independently. The card is theirs
+    and loads from mcprush.com, so it changes when their grade does. It is the
+    only image on this site served by another host: it loads lazily and sends
+    no referrer.
+  </p>
+</div>
 
 <h2>Configuration</h2>
 <p>

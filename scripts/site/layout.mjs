@@ -9,10 +9,11 @@ import { THEME } from "./theme.mjs";
  *
  * # What is deliberately absent
  *
- * No external hosts. No font CDN, no analytics, no tag manager. A tool whose
- * entire argument is that it sends nothing anywhere cannot have a page that
- * makes three third-party requests before the reader has read a sentence — and
- * a `check-site` assertion enforces it, because that is the kind of thing that
+ * No external hosts, with one pinned exception: `mcprushCard`, below. No font
+ * CDN, no analytics, no tag manager, no script. A tool whose entire argument is
+ * that it sends nothing anywhere cannot have a page that makes three
+ * third-party requests before the reader has read a sentence — and a
+ * `check-site` assertion enforces it, because that is the kind of thing that
  * gets added later "just for a week".
  */
 
@@ -391,6 +392,21 @@ ${group.items.map(entry).join("\n")}
   })
   .join("\n")}
 </div>`;
+}
+
+/**
+ * mcprush's grade card for the MCP server: the one thing on this site that
+ * loads from another host.
+ *
+ * It is live on purpose. mcprush regrades the server and redraws its version
+ * and download counts, so a copy served from here would be wrong by the next
+ * release. It loads lazily, so a reader who never scrolls to it never fetches
+ * it, and sends no referrer, so the request does not say which page made it.
+ * `check-site.mjs` pins the URL, the pages it may appear on, and both
+ * attributes, so this exception cannot quietly become a second one.
+ */
+export function mcprushCard() {
+  return `<a class="grade-card" href="https://mcprush.com/suthat/owlwarden-mcp" rel="noopener"><img src="https://mcprush.com/badge/owlwarden-mcp/card.svg" width="380" height="200" alt="Owlwarden MCP server on mcprush" loading="lazy" decoding="async" referrerpolicy="no-referrer"></a>`;
 }
 
 /** The navigation entry that stands for `path`. Every rule page belongs to Rules. */

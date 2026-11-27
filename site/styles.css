@@ -632,6 +632,18 @@ th {
 .directory .blurb { display: block; margin-top: 0.1rem; color: var(--ink-soft); font-size: 0.82rem; line-height: 1.45; }
 .directory-compare { margin: 0.75rem 0 0; color: var(--ink-soft); font-size: 0.8rem; line-height: 1.55; }
 
+.grade { display: flex; flex-wrap: wrap; gap: 1.2rem 2rem; align-items: center; margin: 1.6rem 0 2rem; }
+.grade p { flex: 1 1 18rem; margin: 0; color: var(--ink-soft); }
+.grade-card {
+  display: block;
+  flex: 0 1 380px;
+  border-radius: 6px;
+  box-shadow: var(--shadow);
+  transition: transform 150ms ease;
+}
+.grade-card:hover { transform: translateY(-2px); }
+.grade-card img { width: 100%; height: auto; border-radius: inherit; }
+
 .note {
   max-width: var(--measure);
   margin: 1.5rem 0;

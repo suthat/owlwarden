@@ -14,6 +14,8 @@ Runs on your machine. No account, no telemetry, no network unless you ask for it
 [![licence](https://img.shields.io/badge/licence-MIT%20OR%20Apache--2.0-blue)](#licence)
 [![provenance](https://img.shields.io/badge/npm-provenance-green)](https://www.npmjs.com/package/owlwarden)
 
+[![Owlwarden MCP server](https://mcprush.com/badge/owlwarden-mcp/card.svg)](https://mcprush.com/to/owlwarden-mcp?ref=badge)
+
 [Docs](https://suthat.github.io/owlwarden/) · [Rules](RULES.md) · [Compare](docs/explanation/compared.md) · [Roadmap](ROADMAP.md)
 
 </div>

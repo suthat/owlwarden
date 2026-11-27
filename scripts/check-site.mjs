@@ -38,13 +38,18 @@ const ALLOWED_HOSTS = new Set([
   "img.shields.io",
   "spdx.org",
   "api.osv.dev",
+  "mcprush.com",
   new URL(site).host,
 ]);
 
-// A page loads nothing from another host. An exception has to be listed here,
-// with the pages it may appear on, so that it is a decision for a reviewer
-// rather than a side effect of a template edit.
-const EXTERNAL_RESOURCES = new Map();
+// A page loads nothing from another host, with one exception that is pinned
+// here rather than trusted: mcprush's grade card for the MCP server. It has to
+// be live, so it cannot be served from this site; everything else about it is
+// fixed. The card on a third page, or a second external resource of any kind,
+// is a decision for a reviewer, not a side effect of a template edit.
+const EXTERNAL_RESOURCES = new Map([
+  ["https://mcprush.com/badge/owlwarden-mcp/card.svg", new Set(["index.html", "mcp/index.html"])],
+]);
 
 const pages = await collect(siteDir, ".html");
 assert(pages.length > 50, `expected the generated site, found ${pages.length} pages`);
@@ -460,7 +465,7 @@ function escapeRegExp(text) {
 }
 
 /**
- * Fails anything a page would fetch from another host, unless it is pinned.
+ * Fails anything a page would fetch from another host, except the pinned card.
  *
  * Links are checked separately, against `ALLOWED_HOSTS`: following a link is
  * the reader's choice, while a `src` is fetched the moment the page renders.
