@@ -7,6 +7,16 @@
   <id>https://suthat.github.io/owlwarden/changelog/</id>
   <updated>2026-11-27T00:00:00Z</updated>
   <entry>
+    <title>owlwarden Unreleased</title>
+    <link href="https://suthat.github.io/owlwarden/changelog/#unreleased"/>
+    <id>https://suthat.github.io/owlwarden/changelog/#unreleased</id>
+    <updated>2026-11-27T00:00:00Z</updated>
+    <content type="html">&lt;h3&gt;Fixed&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;A committed &lt;code&gt;.ignore&lt;/code&gt; file could hide a repository&amp;#39;s agent configuration.&lt;/strong&gt; The agent-workspace surface overrides &lt;code&gt;.gitignore&lt;/code&gt;, because &lt;code&gt;.claude/settings.local.json&lt;/code&gt; is conventionally gitignored and the host loads it anyway. The walker still read &lt;code&gt;.ignore&lt;/code&gt;, ripgrep&amp;#39;s convention, which a repository can commit. One line listing &lt;code&gt;.claude/&lt;/code&gt; or &lt;code&gt;CLAUDE.md&lt;/code&gt; took those files away from the agent rules, &lt;code&gt;gate&lt;/code&gt; and &lt;code&gt;seal&lt;/code&gt;, and the scan reported nothing for them. &lt;code&gt;.git/info/exclude&lt;/code&gt;, which a clone does not carry, did the same. The surface now honours no ignore file at all. Application scans still honour all three, as before.&lt;/li&gt;
+&lt;/ul&gt;</content>
+  </entry>
+  <entry>
     <title>owlwarden 1.3.2</title>
     <link href="https://suthat.github.io/owlwarden/changelog/#1-3-2"/>
     <id>https://suthat.github.io/owlwarden/changelog/#1-3-2</id>

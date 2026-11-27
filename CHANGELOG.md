@@ -10,6 +10,18 @@ are listed here under Changed.
 
 ## [Unreleased]
 
+### Fixed
+
+- **A committed `.ignore` file could hide a repository's agent configuration.**
+  The agent-workspace surface overrides `.gitignore`, because
+  `.claude/settings.local.json` is conventionally gitignored and the host loads
+  it anyway. The walker still read `.ignore`, ripgrep's convention, which a
+  repository can commit. One line listing `.claude/` or `CLAUDE.md` took those
+  files away from the agent rules, `gate` and `seal`, and the scan reported
+  nothing for them. `.git/info/exclude`, which a clone does not carry, did the
+  same. The surface now honours no ignore file at all. Application scans still
+  honour all three, as before.
+
 ## [1.3.2] — 2026-11-27
 
 A documentation release, cut so the npm page shows the MCP server's grade. No

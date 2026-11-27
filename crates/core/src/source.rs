@@ -151,13 +151,17 @@ pub trait SourceProvider: Send + Sync {
     fn read(&self, file: &SourceFile) -> Result<Arc<str>, SourceError>;
 
     /// Lists agent-workspace configuration files matching `patterns`,
-    /// **ignoring `.gitignore` and the built-in directory deny list**.
+    /// **ignoring every ignore file and the built-in directory deny list**.
     ///
     /// This is the one deliberate hole in the walker's normal behaviour, and it
     /// exists for one reason: `.claude/settings.local.json` is conventionally
     /// gitignored and `.vscode/` and `.cursor/` are on the deny list, so the
     /// ordinary walk is silent on exactly the files the agent-surface rules are
     /// about ([ADR 0025](../../../docs/adr/0025-agent-surface-and-supply-chain.md) §3).
+    ///
+    /// "Every ignore file" includes `.ignore` and `.git/info/exclude`, not only
+    /// `.gitignore`. An implementation that overrides `.gitignore` but honours
+    /// a committed `.ignore` has not closed the hole; it has moved it.
     ///
     /// Everything else still holds: results stay under the root, symlinks that
     /// leave it are refused at read time, the size caps apply, and dependency
