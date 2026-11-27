@@ -1589,7 +1589,7 @@ function benchmark() {
       { label: "benchmark", href: "benchmark/" },
     ],
     body: `
-<div class="callout">
+<div class="note">
   <p>
     <strong>There is no number on this page yet, and that is the honest state.</strong>
     The harness, the corpus format, and the build gate ship in 1.2 and are tested.
