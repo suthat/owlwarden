@@ -19,6 +19,8 @@ npx owlwarden vet .         # your agent's config
 npx owlwarden seal --verify # notice when the agent's execution surface moves
 ```
 
+[![Owlwarden MCP server](https://mcprush.com/badge/owlwarden-mcp/card.svg)](https://mcprush.com/to/owlwarden-mcp?ref=badge)
+
 ## Install
 
 ```bash
