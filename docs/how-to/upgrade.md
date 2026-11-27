@@ -12,7 +12,7 @@ npm i -D owlwarden@1
 Pin the GitHub Action to a 1.x tag:
 
 ```yaml
-- uses: suthat/owlwarden/action@v1.3.1
+- uses: suthat/owlwarden/action@v1.3.2
 ```
 
 Re-generate generated files so they match this engine:
